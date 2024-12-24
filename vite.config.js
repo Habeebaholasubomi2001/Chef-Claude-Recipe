@@ -8,6 +8,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: ["@huggingface/inference"],
+      dependencies: {
+        "@huggingface/inference": "^2.8.1",
+        "gh-pages": "^6.2.0",
+        "react-markdown": "^9.0.1",
+      },
     },
   },
 });
