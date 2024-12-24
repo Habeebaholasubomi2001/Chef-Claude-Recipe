@@ -5,4 +5,17 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/ChefClaude-Recipe-App",
+  build: {
+    rollupOptions: {
+      external: ["@huggingface/inference"],
+    },
+  },
 });
+
+// export default {
+//   build: {
+//     rollupOptions: {
+//       external: ['@huggingface/inference']
+//     }
+//   }
+// }
