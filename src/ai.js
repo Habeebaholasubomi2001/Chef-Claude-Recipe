@@ -1,11 +1,22 @@
 import { HfInference } from "@huggingface/inference";
 
-const SYSTEM_PROMPT = `You are an assistant that receives a list of ingredients that a user has and suggests a recipe they could make with some or all of those ingredients. You don't need to use every ingredient they mention in your recipe. The recipe can include additional ingredients they didn't mention, but try not to include too many extra ingredients. Format your response in markdown to make it easier to render to a web page`;
+const SYSTEM_PROMPT = `You are a helpful chef assistant. When given a list of ingredients, suggest ONE clear recipe that uses those ingredients. Your response should be well-structured in markdown format with:
+- A title
+- A list of ingredients with quantities
+- Clear step-by-step instructions
+Keep the recipe concise and practical.`;
 
-const hf = new HfInference(" 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");
+const hf = new HfInference(import.meta.env.VITE_HUGGING_FACE_API_KEY);
 
 export async function getRecipeFromMistral(ingredientsArr) {
+  if (!import.meta.env.VITE_HUGGING_FACE_API_KEY) {
+    console.error("No API key found!");
+    return "Sorry, there was an error with the API configuration.";
+  }
+
   const ingredientsString = ingredientsArr.join(", ");
+  console.log("Ingredients being sent:", ingredientsString); // Debug log
+
   try {
     const response = await hf.chatCompletion({
       model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
@@ -17,9 +28,13 @@ export async function getRecipeFromMistral(ingredientsArr) {
         },
       ],
       max_tokens: 1024,
+      temperature: 0.7, // Add temperature for more focused responses
     });
+
+    console.log("API Response:", response); // Debug log
     return response.choices[0].message.content;
   } catch (err) {
-    console.error(err.message);
+    console.error("API Error:", err);
+    return "Sorry, there was an error generating your recipe. Please try again.";
   }
 }

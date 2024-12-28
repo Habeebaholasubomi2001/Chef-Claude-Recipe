@@ -5,16 +5,19 @@ import { getRecipeFromMistral } from "../ai";
 
 export default function Main() {
   const [ingredients, updateIngredients] = useState([]);
+  const [recipe, setRecipe] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const recipeSection = useRef(null);
 
   const addIngredient = function (e) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const newIngredient = formData.get("ingredient");
-    updateIngredients((prevIng) => [...prevIng, newIngredient]);
+    const newIngredient = formData.get("ingredient").trim();
+    if (newIngredient) {
+      updateIngredients((prevIng) => [...prevIng, newIngredient]);
+      e.target.reset(); // Clear the form
+    }
   };
-
-  const [recipe, setRecipe] = useState("");
-  const recipeSection = useRef(null);
 
   useEffect(() => {
     if (recipe !== "" && recipeSection.current !== null) {
@@ -22,10 +25,28 @@ export default function Main() {
     }
   }, [recipe]);
 
-  // Button to change the get the recipe from the AI
   async function getRecipe() {
-    const recipeMarkdown = await getRecipeFromMistral(ingredients);
-    setRecipe(recipeMarkdown);
+    try {
+      setIsLoading(true);
+      setRecipe("Generating recipe..."); // Loading state
+
+      console.log("Requesting recipe for ingredients:", ingredients); // Debug log
+
+      const recipeMarkdown = await getRecipeFromMistral(ingredients);
+
+      if (recipeMarkdown.includes("Sorry, there was an error")) {
+        throw new Error("API Error");
+      }
+
+      setRecipe(recipeMarkdown);
+    } catch (error) {
+      console.error("Recipe generation error:", error);
+      setRecipe(
+        "Sorry, there was an error generating your recipe. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -36,61 +57,20 @@ export default function Main() {
           name="ingredient"
           aria-label="Add Ingredient"
           placeholder="e.g oregano"
+          required
         />
-        <button>Add Ingredients</button>
+        <button type="submit">Add Ingredient</button>
       </form>
 
       {ingredients.length > 0 && (
         <Ingredients
-          ref={recipeSection}
           ingredients={ingredients}
           getRecipe={getRecipe}
+          recipeSection={recipeSection}
         />
       )}
 
-      {recipe && <Recipe recipe={recipe} />}
+      {recipe && <Recipe recipe={recipe} isLoading={isLoading} />}
     </main>
   );
 }
-
-// Recipe token
-// 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
-
-/**
- * Challenge: Get a recipe from the AI!
- *
- * This will be a bit harder of a challenge that will require you
- * to think critically and synthesize the skills you've been
- * learning and practicing up to this point.
- *
- * We'll start with a mini-quiz:
- *
- * 1. Think about where the recipe response should live and how you're
- *    going to make sure it doesn't disappear between each state change in
- *    the app. (I don't mean between refreshes of your mini-browser.
- *    You don't need to save this to localStorage or anything more permanent
- *    than in React's memory for now.)
- * ANs: save the response in React state
- *
- *
- * 2. What action from the user should trigger getting the recipe?
- * When the user clicks the get a recipe button
- *
- */
-
-/**
- * Challenge: Get a recipe from the AI!
- *
- * This will be a bit harder of a challenge that will require you
- * to think critically and synthesize the skills you've been
- * learning and practicing up to this point.
- *
- * Using either the `getRecipeFromChefClaude` function or the
- * `getRecipeFromMistral` function, make it so that when the user
- * clicks "Get a recipe", the text response from the AI is displayed
- * in the <ClaudeRecipe> component.
- *
- * For now, just have it render the raw markdown that the AI returns,
- * don't worry about making it look nice yet. (We're going to use a
- * package that will render the markdown for us soon.)
- */
