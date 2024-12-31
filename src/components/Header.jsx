@@ -27,14 +27,6 @@ export default function Header({ selectedModel, handleModelChange }) {
             >
               Gemini API
             </button>
-            {/* <button
-              className={`spoon-btn ${
-                selectedModel === "spoonacular" ? "active" : ""
-              }`}
-              onClick={() => handleModelChange("spoonacular")}
-            >
-              SPOONACULAR API
-            </button> */}
           </div>
         </div>
       </div>
