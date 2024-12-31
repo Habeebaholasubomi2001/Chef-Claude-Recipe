@@ -10,6 +10,8 @@ body {
   font-weight: 400;
   background-color: #fafaf8;
   overflow-x: hidden;
+  padding-top: 0;
+  margin-top: 0;
 }
 
 .container {
@@ -26,14 +28,72 @@ body {
   justify-content: center;
 }
 
+.logo-box,
+.gpt-box {
+  display: flex;
+  align-items: center;
+}
+
+.logo-box {
+  margin-right: 2rem;
+}
+
 .header-wrapper {
-  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  /* background-color: white; */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
     0px 1px 2px 0px rgba(0, 0, 0, 0.06);
 }
 
-.header > img {
+.main {
+  margin-top: 20px;
+  padding-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-box > img {
   width: 43px;
+}
+
+.model-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.model-buttons button {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: brown;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.model-buttons button.active {
+  background-color: #d17557;
+  color: white;
+}
+
+.intro-text {
+  margin: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  background-color: brown;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  width: 500px;
+  margin: 50px auto;
 }
 
 /* Main */
@@ -79,7 +139,7 @@ body {
 }
 
 ul.ingredients-list {
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   margin-top: 10px;
 }
 
@@ -89,7 +149,6 @@ ul.ingredients-list > li {
 }
 
 /* Recipe */
-
 .get-recipe-container {
   display: flex;
   justify-content: space-between;
@@ -179,11 +238,26 @@ ul.ingredients-list > li {
   }
 
   .header > img {
-    width: 35px;
+    width: 25px;
+    margin-right: 5px;
+  }
+
+  .intro-text {
+    font-size: 12px;
+    width: 300px;
+  }
+
+  .model-buttons button {
+    font-size: 10px;
   }
 
   .add-ingredient-form {
     padding: 0 20px;
+  }
+
+  .get-recipe-container button {
+    font-size: 0.8rem;
+    padding: 2px 5px;
   }
 }
 
@@ -195,5 +269,9 @@ ul.ingredients-list > li {
 
   .ing {
     margin-top: 30px;
+  }
+
+  .model-buttons button {
+    font-size: 12px;
   }
 }

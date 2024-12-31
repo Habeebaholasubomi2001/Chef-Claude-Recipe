@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import Recipe from "./ClaudeRecipe";
 import Ingredients from "./IngredientsList";
 import { getRecipeFromMistral } from "../ai";
+import { getRecipeFromGemini } from "../gemini";
+import { getRecipeFromSpoonacular } from "../spoonacular";
 
-export default function Main() {
+export default function Main({ selectedModel }) {
   const [ingredients, updateIngredients] = useState([]);
   const [recipe, setRecipe] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +15,7 @@ export default function Main() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newIngredient = formData.get("ingredient").trim();
+
     if (newIngredient) {
       updateIngredients((prevIng) => [...prevIng, newIngredient]);
       e.target.reset(); // Clear the form
@@ -28,16 +31,22 @@ export default function Main() {
   async function getRecipe() {
     try {
       setIsLoading(true);
-      setRecipe("Generating recipe..."); // Loading state
+      setRecipe("Generating recipe...");
 
-      console.log("Requesting recipe for ingredients:", ingredients); // Debug log
+      console.log("Using model:", selectedModel); // Debug log
 
-      const recipeMarkdown = await getRecipeFromMistral(ingredients);
+      let recipeMarkdown;
+      if (selectedModel === "gemini") {
+        recipeMarkdown = await getRecipeFromGemini(ingredients);
+      } else if (selectedModel === "claude") {
+        recipeMarkdown = await getRecipeFromMistral(ingredients);
+      } else if (selectedModel === "spoonacular") {
+        recipeMarkdown = await getRecipeFromSpoonacular(ingredients);
+      }
 
       if (recipeMarkdown.includes("Sorry, there was an error")) {
         throw new Error("API Error");
       }
-
       setRecipe(recipeMarkdown);
     } catch (error) {
       console.error("Recipe generation error:", error);
