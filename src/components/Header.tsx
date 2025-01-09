@@ -1,6 +1,12 @@
-import chefClaudeLogo from "./images/Chef Claude Icon.png";
+import { FC } from "react";
+import chefClaudeLogo from "../components/images/Chef-Claude-Icon.png";
 
-export default function Header({ selectedModel, handleModelChange }) {
+interface HeaderProps {
+  selectedModel: "claude" | "gemini";
+  handleModelChange: (model: "claude" | "gemini") => void;
+}
+
+const Header: FC<HeaderProps> = ({ selectedModel, handleModelChange }) => {
   return (
     <div className="header-wrapper">
       <div className="header">
@@ -32,4 +38,6 @@ export default function Header({ selectedModel, handleModelChange }) {
       </div>
     </div>
   );
-}
+};
+
+export default Header;

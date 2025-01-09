@@ -1,4 +1,6 @@
-export default function Intro() {
+import { FC } from "react";
+
+const Intro: FC = () => {
   return (
     <div className="container">
       <h3 className="intro-text">
@@ -7,4 +9,6 @@ export default function Intro() {
       </h3>
     </div>
   );
-}
+};
+
+export default Intro;

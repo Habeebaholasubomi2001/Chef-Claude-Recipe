@@ -1,24 +1,33 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, FC, FormEvent } from "react";
 import Recipe from "./ClaudeRecipe";
 import Ingredients from "./IngredientsList";
 import { getRecipeFromMistral } from "../ai";
 import { getRecipeFromGemini } from "../gemini";
-import { getRecipeFromSpoonacular } from "../spoonacular";
 
-export default function Main({ selectedModel }) {
-  const [ingredients, updateIngredients] = useState([]);
-  const [recipe, setRecipe] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const recipeSection = useRef(null);
+// Define props interface
+interface MainProps {
+  selectedModel: "claude" | "gemini";
+}
 
-  const addIngredient = function (e) {
+// Define component with types
+const Main: FC<MainProps> = ({ selectedModel }) => {
+  // Type the state hooks
+  const [ingredients, updateIngredients] = useState<string[]>([]);
+  const [recipe, setRecipe] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Type the ref
+  const recipeSection = useRef<HTMLDivElement | null>(null);
+
+  // Type the event handler
+  const addIngredient = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const newIngredient = formData.get("ingredient").trim();
+    const newIngredient = formData.get("ingredient")?.toString().trim();
 
     if (newIngredient) {
       updateIngredients((prevIng) => [...prevIng, newIngredient]);
-      e.target.reset(); // Clear the form
+      e.currentTarget.reset();
     }
   };
 
@@ -28,20 +37,21 @@ export default function Main({ selectedModel }) {
     }
   }, [recipe]);
 
-  async function getRecipe() {
+  // Type the async function
+  const getRecipe = async (): Promise<void> => {
     try {
       setIsLoading(true);
       setRecipe("Generating recipe...");
 
       console.log("Using model:", selectedModel); // Debug log
 
-      let recipeMarkdown;
+      let recipeMarkdown: string;
       if (selectedModel === "gemini") {
         recipeMarkdown = await getRecipeFromGemini(ingredients);
       } else if (selectedModel === "claude") {
         recipeMarkdown = await getRecipeFromMistral(ingredients);
-      } else if (selectedModel === "spoonacular") {
-        recipeMarkdown = await getRecipeFromSpoonacular(ingredients);
+      } else {
+        recipeMarkdown = "Invalid model selected";
       }
 
       if (recipeMarkdown.includes("Sorry, there was an error")) {
@@ -56,7 +66,7 @@ export default function Main({ selectedModel }) {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <main className="container main">
@@ -82,4 +92,6 @@ export default function Main({ selectedModel }) {
       {recipe && <Recipe recipe={recipe} isLoading={isLoading} />}
     </main>
   );
-}
+};
+
+export default Main;

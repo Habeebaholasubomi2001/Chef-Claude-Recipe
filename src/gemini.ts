@@ -4,7 +4,22 @@ const SYSTEM_PROMPT = `You are a helpful chef assistant. When given a list of in
 - Clear step-by-step instructions
 Keep the recipe concise and practical.`;
 
-export async function getRecipeFromGemini(ingredientsArr) {
+interface GeminiResponse {
+  candidates?: Array<{
+    content: {
+      parts: Array<{
+        text: string;
+      }>;
+    };
+  }>;
+  error?: {
+    message: string;
+  };
+}
+
+export async function getRecipeFromGemini(
+  ingredientsArr: string[]
+): Promise<string> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -36,7 +51,7 @@ export async function getRecipeFromGemini(ingredientsArr) {
       }
     );
 
-    const data = await response.json();
+    const data: GeminiResponse = await response.json();
     console.log("API Response:", data); // Debug log
 
     if (data.error) {
