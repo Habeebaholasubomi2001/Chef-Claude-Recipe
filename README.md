@@ -1,8 +1,33 @@
-# React + Vite
+# Chef Claude Recipe Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript application that generates recipes using AI models (Claude and Gemini).
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env` and add your API keys
+4. Run development server: `npm run dev`
+5. Build for production: `npm run build`
+
+## Environment Variables
+
+- `VITE_HUGGING_FACE_API_KEY`: HuggingFace API key for Claude
+- `VITE_GEMINI_API_KEY`: Google Gemini API key
+
+## Technologies
+
+- React 18
+- TypeScript 5
+- Vite 6
+- React Markdown
+- ESLint
+- HuggingFace Inference
+- Google Gemini API
+
+## Features
+
+- Recipe generation from ingredients
+- Multiple AI model support
+- Markdown rendering
+- Responsive design
